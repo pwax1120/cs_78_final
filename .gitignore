@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+
+# Large files
+checkpoints/
+simclr-converter/
+*.pt
+*.pth
+*.safetensors
+*.tar.gz
+
+# Data — exclude raw, keep splits
+data/*
+!data/splits/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/

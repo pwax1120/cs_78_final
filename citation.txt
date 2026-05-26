@@ -1,0 +1,1 @@
+Lin, T. (2020). SimCLR-converter: A PyTorch converter for SimCLR checkpoints [Source code]. GitHub. https://github.com/tonylins/simclr-converter
