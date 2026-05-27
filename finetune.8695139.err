@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "/dartfs-hpc/rc/home/x/f006twx/cs_78_final/model_finetune.py", line 13, in <module>
-    import numpy as np
-ModuleNotFoundError: No module named 'numpy'
