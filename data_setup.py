@@ -1,3 +1,4 @@
+from __future__ import annotations
 """ One-time script to generate deterministic, stratified split index files."""
 
 import argparse

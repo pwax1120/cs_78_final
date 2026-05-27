@@ -42,7 +42,7 @@ class FinetuneConfig:
 
     # Reproducibility
     seed: int = 42 
-    device: str = "mps"
+    device: str = "cuda"
     num_workers: int = 4
 
 
@@ -89,8 +89,8 @@ def _train_one_epoch(model, data_loader, optimizer, scheduler, device, criterion
     total = 0
 
     for inputs, targets in data_loader:
-        inputs = inputs.to(torch.device("mps"), non_blocking=True)
-        targets = targets.to(torch.device("mps"), non_blocking=True)
+        inputs = inputs.to(torch.device("cuda"), non_blocking=True)
+        targets = targets.to(torch.device("cuda"), non_blocking=True)
 
         optimizer.zero_grad()
         outputs = model(inputs)
@@ -161,18 +161,23 @@ def _default_run_name(config: FinetuneConfig) -> str:
 def train(config: FinetuneConfig) -> Path:
     """Run end-to-end fine-tuning. Returns the path to the best checkpoint."""
     _set_seed(config.seed)
-    device = "mps"
+    device = "cuda"
     print(f"Device: {device}")
     print(f"Config: {asdict(config)}")
 
     # Build everything
+    print("Loading model...", flush=True)
     model = _build_model(config).to(device)
+    print("Model loaded", flush=True)
+
+    print("Loading data...", flush=True)
     train_loader, val_loader, test_loader = build_dataloaders(
         dataset=config.dataset,
         label_fraction=config.label_fraction,
         batch_size=config.batch_size,
         num_workers=config.num_workers,
     )
+    print("Data loaded", flush=True)
     optimizer = _build_optimizer(model, config)
     scheduler = _build_scheduler(optimizer, config, len(train_loader))
     criterion = nn.CrossEntropyLoss()
@@ -235,12 +240,12 @@ if __name__ == "__main__":
         momentum=0.9,
         weight_decay=0.0,
         optimizer="sgd",
-        epochs=1,               # just one epoch
+        epochs=60,               # just one epoch
         batch_size=256,
         scheduler="cosine",
         seed=42,
         device="auto",          # will pick MPS on your Mac if available
-        num_workers=2,
+        num_workers=0,
     )
     train(config)
 

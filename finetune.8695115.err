@@ -1,0 +1,25 @@
+
+CommandNotFoundError: Your shell has not been properly configured to use 'conda activate'.
+To initialize your shell, run
+
+    $ conda init <SHELL_NAME>
+
+Currently supported shells are:
+  - bash
+  - fish
+  - tcsh
+  - xonsh
+  - zsh
+  - powershell
+
+See 'conda init --help' for more information and options.
+
+IMPORTANT: You may need to close and restart your shell after running 'conda init'.
+
+
+Traceback (most recent call last):
+  File "model_finetune.py", line 18, in <module>
+    from load_pretrained import load_pretrained_resnet50x1
+  File "/dartfs-hpc/rc/home/x/f006twx/cs_78_final/load_pretrained.py", line 4, in <module>
+    from safetensors.torch import load_file
+ModuleNotFoundError: No module named 'safetensors'

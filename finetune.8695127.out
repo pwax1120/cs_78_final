@@ -1,0 +1,26 @@
+Tue May 26 20:21:27 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.65.06              Driver Version: 580.65.06      CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          Off |   00000000:81:00.0 Off |                    0 |
+| N/A   28C    P0             44W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+Device: cuda
+Config: {'dataset': 'cifar10', 'num_classes': 10, 'label_fraction': 0.01, 'mode': 'full', 'lr': 0.003125, 'weight_decay': 0.0, 'momentum': 0.9, 'optimizer': 'sgd', 'epochs': 1, 'batch_size': 256, 'scheduler': 'cosine', 'warmup_epochs': 0, 'seed': 42, 'device': 'auto', 'num_workers': 2, 'output_dir': './checkpoints/finetune_outputs', 'run_name': ''}
+Epoch   1/1 | train_loss=2.3008 train_acc=0.1367 | val_loss=2.2967 val_acc=0.1158 | 5.5s
+
+Best val accuracy: 0.1158
+Best checkpoint:   checkpoints/finetune_outputs/cifar10_full_frac0.01_seed42_best.pt
