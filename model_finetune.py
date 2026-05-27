@@ -234,7 +234,7 @@ if __name__ == "__main__":
     config = FinetuneConfig(
         dataset="cifar10",
         num_classes=10,
-        label_fraction=0.01,    # 450 training examples → 14 batches at bs=32
+        label_fraction=1,    # 450 training examples → 14 batches at bs=32
         mode="full",    # frozen encoder, fast
         lr=0.003125,            # scaled from 4096 lr to 256 following the SimCLR paper's linear eval protocol
         momentum=0.9,
