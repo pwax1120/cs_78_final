@@ -8,6 +8,7 @@ from pathlib import Path
 
 import numpy as np
 from torchvision.datasets import CIFAR10, CIFAR100
+from __future__ import annotations
 
 # --- PROTOCOL CONSTANTS --- #
 VAL_SEED = 20260524

@@ -206,7 +206,7 @@ def train(config: FinetuneConfig) -> Path:
             f"Epoch {epoch+1:3d}/{config.epochs} "
             f"| train_loss={train_loss:.4f} train_acc={train_acc:.4f} "
             f"| val_loss={val_loss:.4f} val_acc={val_acc:.4f} "
-            f"| {dt:.1f}s"
+            f"| {dt:.1f}s", flush=True
         )
 
         if val_acc > best_val_acc:
