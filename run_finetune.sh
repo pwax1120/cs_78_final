@@ -9,7 +9,7 @@
 #SBATCH --time=08:00:00
 #SBATCH --output=logs/%x.%A_%a.out
 #SBATCH --error=logs/%x.%A_%a.err
-#SBATCH --array=0-5
+#SBATCH --array=0-29
 
 module load python
 source /optnfs/common/miniconda3/etc/profile.d/conda.sh
