@@ -74,8 +74,8 @@ if __name__ == "__main__":
     print(f"  output shape: {out.shape}")
     assert out.shape == (2, 1000)
 
-    print("Loading model for 10-class fine-tuning, encoder frozen...")
-    m = load_pretrained_resnet50x1(num_classes=10, freeze_encoder=True)
+    print(f"Loading model for 10-class fine-tuning, encoder frozen...")
+    m = load_pretrained_resnet50x1(num_classes=10, freeze_encoder=False)
     print(f"  fc layer: {m.fc}")
     trainable = sum(p.numel() for p in m.parameters() if p.requires_grad)
     total = sum(p.numel() for p in m.parameters())
