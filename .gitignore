@@ -11,7 +11,7 @@ simclr-converter/
 *.pth
 *.safetensors
 *.tar.gz
-
+finetune_outputs/*
 # Data — exclude raw, keep splits
 data/*
 !data/splits/
