@@ -176,6 +176,41 @@ def evaluate(checkpoint_path: str, output_path: str = None,
 
     return results
 
+def evaluate_folder(folder: str, batch_size: int = 128,
+                    num_workers: int = 2, device_spec: str = "auto"):
+    """Evaluate every .pt checkpoint in a folder."""
+    folder = Path(folder)
+    checkpoints = sorted(folder.glob("*.pt"))
+    if not checkpoints:
+        raise FileNotFoundError(f"No .pt files found in {folder}")
+
+    print(f"Found {len(checkpoints)} checkpoints in {folder}\n")
+    summary = []
+    for i, ckpt in enumerate(checkpoints, 1):
+        print(f"\n{'='*60}\n[{i}/{len(checkpoints)}] {ckpt.name}\n{'='*60}")
+        try:
+            results = evaluate(
+                checkpoint_path=str(ckpt),
+                batch_size=batch_size,
+                num_workers=num_workers,
+                device_spec=device_spec,
+            )
+            summary.append({
+                "checkpoint": ckpt.name,
+                "top1": results["evaluation_metrics"]["test_acc_top1"],
+                "top5": results["evaluation_metrics"]["test_acc_top5"],
+            })
+        except Exception as e:
+            print(f"  FAILED: {e}")
+            summary.append({"checkpoint": ckpt.name, "error": str(e)})
+
+    print(f"\n{'='*60}\nSUMMARY\n{'='*60}")
+    for s in summary:
+        if "error" in s:
+            print(f"{s['checkpoint']:50s} ERROR: {s['error']}")
+        else:
+            print(f"{s['checkpoint']:50s} top1={s['top1']:.4f} top5={s['top5']:.4f}")
+    return summary
 
 # --- CLI -------------------------------------------------------------------
 
@@ -183,8 +218,8 @@ def main():
     parser = argparse.ArgumentParser(
         description="Evaluate a fine-tuned SimCLR checkpoint on its test set."
     )
-    parser.add_argument("--checkpoint", required=True,
-                        help="Path to the .pt checkpoint produced by model_finetune.py")
+    parser.add_argument("--checkpoint", help="Path to a single .pt checkpoint")
+    parser.add_argument("--folder", help="Path to a folder of .pt checkpoints")
     parser.add_argument("--output", default=None,
                         help="Where to write the results JSON (default: alongside the checkpoint)")
     parser.add_argument("--batch-size", type=int, default=128)
@@ -193,13 +228,17 @@ def main():
                         choices=["auto", "cuda", "mps", "cpu"])
     args = parser.parse_args()
 
-    evaluate(
-        checkpoint_path=args.checkpoint,
-        output_path=args.output,
-        batch_size=args.batch_size,
-        num_workers=args.num_workers,
-        device_spec=args.device,
-    )
+    if args.folder:
+        evaluate_folder(args.folder, batch_size=args.batch_size,
+                        num_workers=args.num_workers, device_spec=args.device)
+    else:
+        evaluate(
+            checkpoint_path=args.checkpoint,
+            output_path=args.output,
+            batch_size=args.batch_size,
+            num_workers=args.num_workers,
+            device_spec=args.device,
+        )
 
 
 if __name__ == "__main__":
