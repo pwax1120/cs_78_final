@@ -1,0 +1,11 @@
+# --- Core deep-learning stack ---
+torch==2.5.1            # use the cu121 build on Discovery if training with Discovery Cluster
+torchvision>=0.20.0     # >= 0.13 strictly required for the EuroSAT dataset class
+numpy>=1.26,<2.0
+ 
+# --- Checkpoint I/O ---
+safetensors>=0.4.0      # load/save the cleaned SimCLR weights
+ 
+# --- Pretrained-weight acquisition ---
+gdown>=5.1.0            # auto-download cleaned weights from Google Drive
+huggingface_hub>=0.23.0 # one-time: pull the raw HF mirror before cleaning
