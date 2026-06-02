@@ -34,10 +34,10 @@ class FinetuneConfig:
     lr: float = 0.0
     weight_decay: float = 0.0
     momentum: float = 0.0
-    optimizer: str = "sgd" # either "sgd" or "adam" #NOTE: should figure out what this does after this lol
+    optimizer: str = "sgd" 
     epochs: int = 100
     batch_size: int = 256
-    scheduler: str = "cosine" # either "cosine" or "step" or "none" #NOTE: should figure out what this does after this lol
+    scheduler: str = "cosine" 
     warmup_epochs: int = 0
 
     # Reproducibility
@@ -131,9 +131,6 @@ def _evaluate(model, loader, device, criterion):
 
     return total_loss / total, correct / total
 
-
-# --- Checkpoint I/O --------------------------------------------------------
-
 def _save_checkpoint(model, optimizer, config, metrics, path: Path) -> None:
     """Save a self-describing checkpoint bundle."""
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -155,8 +152,6 @@ def _default_run_name(config: FinetuneConfig) -> str:
         f"_seed{config.seed}"
     )
 
-
-# --- Public API ------------------------------------------------------------
 
 def train(config: FinetuneConfig) -> Path:
     """Run end-to-end fine-tuning. Returns the path to the best checkpoint."""
@@ -222,8 +217,6 @@ def train(config: FinetuneConfig) -> Path:
     return best_path
 
 
-# --- CLI / smoke test ------------------------------------------------------
-
 if __name__ == "__main__":
     """Smoke test: minimal config that exercises every code path in ~30 seconds.
     
@@ -234,30 +227,17 @@ if __name__ == "__main__":
     config = FinetuneConfig(
         dataset="cifar10",
         num_classes=10,
-        label_fraction=1,    # 450 training examples → 14 batches at bs=32
-        mode="full",    # frozen encoder, fast
+        label_fraction=1,    
+        mode="full",   
         lr=0.003125,            # scaled from 4096 lr to 256 following the SimCLR paper's linear eval protocol
         momentum=0.9,
         weight_decay=0.0,
         optimizer="sgd",
-        epochs=60,               # just one epoch
+        epochs=60,             
         batch_size=256,
         scheduler="cosine",
         seed=42,
-        device="auto",          # will pick MPS on your Mac if available
+        device="auto",          
         num_workers=0,
     )
     train(config)
-
-
-
-
-# Internal loader function, this should fail if the model doesn't correctly load from the load_pretrained.py file
-
-
-# Internal setup function that takes args for specifying if the model should be setup for fine-tuning or linear evaluation, and the number of classes for the final layer
-# Will return the model with the pretrained weights loaded and the final layer replaced to match num_classes, and the encoder layers frozen if freeze_encoder is True
-
-
-
-# Public function that takes the setup model and pretrains it, should take args dataset for finetuning on, as well as name and location for file output that the function outputs to

@@ -27,9 +27,9 @@ NO_NATIVE_TEST = {"eurosat"}
 # --- Transform the data --- #
 def _train_transform():
     return transforms.Compose([
-        transforms.Resize((INPUT_SIZE, INPUT_SIZE)),  # CIFAR 32x32 / EuroSAT 64x64 -> 224x224
-        transforms.RandomHorizontalFlip(),            # cheap, standard, essentially free
-        transforms.ToTensor(),                        # PIL -> tensor, required
+        transforms.Resize((INPUT_SIZE, INPUT_SIZE)), 
+        transforms.RandomHorizontalFlip(),            
+        transforms.ToTensor(),                        
     ])
 
 def _eval_transform():
@@ -136,17 +136,7 @@ if __name__ == "__main__":
         print(f"Val batches:   {len(val_loader)}")
         print(f"Test batches:  {len(test_loader)}")
 
-        # Pull one batch and check shapes
+      
         x, y = next(iter(train_loader))
         print(f"Train batch x: {x.shape}, dtype={x.dtype}, range=[{x.min():.3f}, {x.max():.3f}]")
         print(f"Train batch y: {y.shape}, dtype={y.dtype}, unique={y.unique().tolist()}")
-
-    # Expected for cifar10/0.1:
-    #   Train batches: ~140  (4500 examples / 32 batch size, drop_last=True)
-    #   Val batches:    157  (5000 / 32, plus partial)
-    #   Test batches:   313  (10000 / 32, plus partial)
-    #   Train batch x: torch.Size([32, 3, 224, 224]), range=[0.000, 1.000]
-    #   Train batch y: torch.Size([32]), dtype=torch.int64
-    #
-    # Expected for eurosat/0.1 (test ≈ 20% of 27k, val/train from the rest):
-    #   Test batches:  ~169  (≈5400 / 32, plus partial)

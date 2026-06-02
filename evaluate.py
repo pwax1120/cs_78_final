@@ -20,8 +20,6 @@ from load_pretrained import load_pretrained_resnet50x1
 from data_loaders import build_dataloaders
 
 
-# --- Core evaluation -------------------------------------------------------
-
 @torch.no_grad()
 def evaluate_model(model, loader, device, num_classes):
     """Run model over loader. Returns dict of metrics."""
@@ -72,9 +70,6 @@ def evaluate_model(model, loader, device, num_classes):
         "num_test_examples": total,
     }
 
-
-# --- Checkpoint loading ----------------------------------------------------
-
 def load_finetuned_model(checkpoint_path, device):
     """Reconstruct the fine-tuned model from a saved checkpoint.
 
@@ -101,9 +96,6 @@ def _resolve_device(spec):
     if torch.backends.mps.is_available():
         return torch.device("mps")
     return torch.device("cpu")
-
-
-# --- Public entry point ----------------------------------------------------
 
 def evaluate(checkpoint_path: str, output_path: str = None,
              batch_size: int = 128, num_workers: int = 2,
@@ -133,7 +125,7 @@ def evaluate(checkpoint_path: str, output_path: str = None,
     # Build test loader (we ignore train/val here)
     _, _, test_loader = build_dataloaders(
         dataset=dataset,
-        label_fraction=config["label_fraction"],  # any valid fraction works for test
+        label_fraction=config["label_fraction"],  
         batch_size=batch_size,
         num_workers=num_workers,
     )
@@ -212,7 +204,6 @@ def evaluate_folder(folder: str, batch_size: int = 128,
             print(f"{s['checkpoint']:50s} top1={s['top1']:.4f} top5={s['top5']:.4f}")
     return summary
 
-# --- CLI -------------------------------------------------------------------
 
 def main():
     parser = argparse.ArgumentParser(
