@@ -42,13 +42,14 @@ class FinetuneConfig:
 
     # Reproducibility
     seed: int = 42 
-    device: str = "cuda"
+    device: str = "auto"
     num_workers: int = 4
 
 
     # I/O - should help make training more clear and help to debug
     output_dir: str = "./checkpoints/finetune_outputs" # where to save the model checkpoints and training logs
     run_name: str = "" # a name for the run, used for naming the output files
+
 
 # Function to set specific seeds so training can be compared and allows for reproducibility
 def _set_seed(seed):
@@ -57,6 +58,25 @@ def _set_seed(seed):
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
 
+def _get_device(device: str = "auto") -> torch.device:
+    if device == "auto":
+        if torch.cuda.is_available():
+            return torch.device("cuda")
+        elif torch.backends.mps.is_available():
+            return torch.device("mps")  # Apple Silicon GPU
+        else:
+            return torch.device("cpu")
+
+    if device == "cuda" and not torch.cuda.is_available():
+        print("Warning: CUDA requested but not available. Falling back to CPU.")
+        return torch.device("cpu")
+
+    if device == "mps" and not torch.backends.mps.is_available():
+        print("Warning: MPS requested but not available. Falling back to CPU.")
+        return torch.device("cpu")
+
+    return torch.device(device)
+    
 def _build_model(config: FinetuneConfig):
     freeze_encoder = (config.mode == "linear_eval") # if we're doing linear evaluation, we want to freeze the encoder layers
     return load_pretrained_resnet50x1(num_classes=config.num_classes, freeze_encoder=freeze_encoder) 
@@ -89,8 +109,8 @@ def _train_one_epoch(model, data_loader, optimizer, scheduler, device, criterion
     total = 0
 
     for inputs, targets in data_loader:
-        inputs = inputs.to(torch.device("cuda"), non_blocking=True)
-        targets = targets.to(torch.device("cuda"), non_blocking=True)
+        inputs = inputs.to(device, non_blocking=True)
+        targets = targets.to(device, non_blocking=True)
 
         optimizer.zero_grad()
         outputs = model(inputs)
@@ -156,7 +176,7 @@ def _default_run_name(config: FinetuneConfig) -> str:
 def train(config: FinetuneConfig) -> Path:
     """Run end-to-end fine-tuning. Returns the path to the best checkpoint."""
     _set_seed(config.seed)
-    device = "cuda"
+    device = _get_device(config.device)
     print(f"Device: {device}")
     print(f"Config: {asdict(config)}")
 

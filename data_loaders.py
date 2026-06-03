@@ -51,8 +51,8 @@ def _load_splits(dataset):
 def _make_pool(DatasetClass, dataset, train, transform):
     """Construct a dataset, handling datasets that lack a `train` argument."""
     if dataset in NO_NATIVE_TEST:
-        return DatasetClass(root=DATA_ROOT, download=False, transform=transform)
-    return DatasetClass(root=DATA_ROOT, train=train, download=False, transform=transform)
+        return DatasetClass(root=DATA_ROOT, download=True, transform=transform)
+    return DatasetClass(root=DATA_ROOT, train=train, download=True, transform=transform)
 
 
 def build_dataloaders(dataset, label_fraction, batch_size, num_workers):
